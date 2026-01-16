@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Form | AI-Powered Fitness Form Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --text-primary: #f5f5f5;
+            --text-secondary: #888888;
+            --accent-orange: #ff6b35;
+            --accent-coral: #ff8c61;
+            --accent-warm: #ffa577;
+            --gradient-mesh: radial-gradient(ellipse at 20% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 50%),
+                             radial-gradient(ellipse at 80% 80%, rgba(255, 140, 97, 0.1) 0%, transparent 50%),
+                             radial-gradient(ellipse at 50% 50%, rgba(255, 165, 119, 0.05) 0%, transparent 70%);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --glow: 0 0 60px rgba(255, 107, 53, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-orange); border-radius: 4px; }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 0.75rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+        }
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.15em;
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 3rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent-orange);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 4rem;
+            background: var(--gradient-mesh), var(--bg-primary);
+        }
+        .hero-content {
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+        .hero-text { animation: fadeInUp 1s ease-out; }
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent-orange);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .hero-label::before {
+            content: '';
+            width: 40px; height: 1px;
+            background: var(--accent-orange);
+        }
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-title span {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-coral) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            display: block;
+        }
+        .hero-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-bottom: 3rem;
+        }
+        .hero-cta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .btn {
+            padding: 1rem 2.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary { background: var(--accent-orange); color: var(--bg-primary); }
+        .btn-primary:hover { background: var(--accent-coral); box-shadow: var(--glow); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); }
+        .btn-secondary:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+
+        .hero-visual { position: relative; animation: fadeInRight 1s ease-out 0.3s both; }
+        .hero-animation-container {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 3rem;
+            overflow: hidden;
+            min-height: 400px;
+        }
+        .hero-animation-container::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-orange) 10deg, transparent 20deg);
+            animation: rotate 8s linear infinite;
+            opacity: 0.1;
+        }
+        .hero-exercises {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-exercise-icon {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .hero-exercise-icon:hover { border-color: var(--accent-orange); transform: translateY(-5px); }
+        .hero-exercise-icon svg { width: 65px; height: 65px; }
+        .hero-exercise-icon span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); }
+
+
+
+        .about { padding: 8rem 4rem; position: relative; }
+        .section-header { text-align: center; margin-bottom: 5rem; }
+        .section-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 8rem;
+            color: var(--accent-orange);
+            opacity: 0.1;
+            position: absolute;
+            top: 4rem; left: 50%;
+            transform: translateX(-50%);
+        }
+        .section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 1rem; }
+        .section-subtitle { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        .about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .about-left { display: flex; flex-direction: column; gap: 2rem; }
+        .about-text p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .about-text p:first-of-type::first-letter {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            float: left;
+            line-height: 0.8;
+            margin-right: 0.5rem;
+            color: var(--accent-orange);
+        }
+
+        .app-icon-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        .app-icon-placeholder {
+            width: 150px; height: 150px;
+            background: var(--bg-secondary);
+            border: 2px dashed var(--card-border);
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .app-icon-placeholder:hover { border-color: var(--accent-orange); }
+        .app-icon-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 30px; }
+        .app-icon-placeholder .placeholder-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-secondary); }
+        .app-icon-placeholder .placeholder-content span { font-size: 2rem; }
+        .app-icon-placeholder .placeholder-content p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin: 0; }
+        .app-icon-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover { border-color: var(--accent-orange); transform: translateY(-5px); }
+        .stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent-orange); }
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); }
+
+        .showcase-section { padding: 8rem 4rem; background: var(--bg-secondary); position: relative; }
+        .showcase-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+        .device-frame { position: relative; max-width: 320px; margin: 0 auto; }
+        .device-frame::before {
+            content: '';
+            position: absolute;
+            top: -40px; left: -40px; right: -40px; bottom: -40px;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 107, 53, 0.6) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(255, 140, 97, 0.5) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 50%, rgba(255, 165, 119, 0.4) 0%, transparent 60%);
+            border-radius: 50px;
+            filter: blur(40px);
+            animation: glowPulse 4s ease-in-out infinite;
+            z-index: 0;
+        }
+        .device-frame::after {
+            content: '';
+            position: absolute;
+            top: -25px; left: -25px; right: -25px; bottom: -25px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-coral), var(--accent-warm));
+            border-radius: 45px;
+            opacity: 0.3;
+            filter: blur(20px);
+            z-index: 0;
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .app-screenshot { width: 100%; border-radius: 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); position: relative; z-index: 1; }
+        .showcase-info h3 { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .showcase-info p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .feature-list { list-style: none; }
+        .feature-list li { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; }
+        .feature-list li::before { content: '→'; color: var(--accent-orange); font-weight: bold; }
+
+        .video-section { padding: 8rem 4rem; position: relative; }
+        .video-section.alt-bg { background: var(--bg-secondary); }
+        .exercise-demo-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        .exercise-demo-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .exercise-demo-card:hover { border-color: var(--accent-orange); box-shadow: var(--glow); }
+        .video-wrapper { position: relative; }
+        .video-label {
+            position: absolute;
+            top: 1rem; left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 700;
+            z-index: 2;
+        }
+        .label-correct { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .label-incorrect { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .video-placeholder {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+        .video-placeholder video { width: 100%; height: 100%; object-fit: cover; }
+        .video-upload-icon {
+            width: 60px; height: 60px;
+            border: 2px dashed var(--card-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .video-placeholder:hover .video-upload-icon { border-color: var(--accent-orange); color: var(--accent-orange); }
+        .video-upload-text { font-size: 0.8rem; color: var(--text-secondary); }
+        .video-info { padding: 1.5rem; }
+        .video-title { font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: 0.5rem; }
+        .video-desc { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .exercise-animation {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--card-border);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .exercise-animation svg { 
+            width: 120px; 
+            height: 80px;
+        }
+        .exercise-animation-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); }
+
+        .single-exercise-section { padding: 6rem 4rem; position: relative; }
+        .single-exercise-section.alt-bg { background: var(--bg-secondary); }
+        .exercise-section-header { text-align: center; margin-bottom: 3rem; }
+        .exercise-section-title { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .exercise-section-subtitle { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .timeline-section { padding: 8rem 4rem; background: var(--bg-secondary); position: relative; overflow: hidden; }
+        .timeline-section::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--gradient-mesh); opacity: 0.5; }
+        .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        .timeline { position: relative; padding: 2rem 0; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--accent-orange), transparent);
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 4rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+        .timeline-item:nth-child(odd) { flex-direction: row; }
+        .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+        .timeline-content {
+            width: 45%;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        .timeline-content:hover { border-color: var(--accent-orange); box-shadow: var(--glow); }
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 20px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            border: 4px solid var(--bg-secondary);
+            z-index: 2;
+        }
+        .timeline-marker::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px; height: 40px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .timeline-step { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.2em; color: var(--accent-orange); margin-bottom: 0.5rem; }
+        .timeline-title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; }
+        .timeline-text { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .tech-section { padding: 8rem 4rem; position: relative; }
+        .tech-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; }
+        .tech-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-coral));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .tech-card:hover { transform: translateY(-10px); border-color: var(--accent-orange); }
+        .tech-card:hover::before { transform: scaleX(1); }
+        .tech-icon { width: 60px; height: 60px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .tech-name { font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: 0.5rem; }
+        .tech-desc { font-size: 0.75rem; color: var(--text-secondary); }
+
+        footer { padding: 4rem; border-top: 1px solid var(--card-border); text-align: center; }
+        .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 0.15em; color: var(--accent-orange); margin-bottom: 1rem; }
+        .footer-text { color: var(--text-secondary); font-size: 0.8rem; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; } 50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+        @keyframes pushup { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+        @keyframes pullup { 0%, 100% { transform: translateY(8px); } 50% { transform: translateY(0); } }
+        @keyframes squat { 0%, 100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(5px) scaleY(0.85); } }
+        @keyframes situp { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-30deg); } }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1024px) {
+            .hero-content, .about-content, .showcase-grid, .exercise-demo-grid { grid-template-columns: 1fr; }
+            .timeline::before { left: 20px; }
+            .timeline-item { flex-direction: row !important; justify-content: flex-start; padding-left: 60px; }
+            .timeline-content { width: 100%; }
+            .timeline-marker { left: 20px; }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 0.75rem 2rem; }
+            .nav-links { display: none; }
+            .hero, .about, .tech-section, .showcase-section, .video-section, .timeline-section, .single-exercise-section { padding: 4rem 2rem; }
+            .section-number { font-size: 5rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <a href="#" class="logo">TRUE FORM</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#showcase">App</a></li>
+            <li><a href="#demos">Demos</a></li>
+            <li><a href="#journey">Journey</a></li>
+            <li><a href="#tech">Technologies</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-label">AI-Powered Fitness</div>
+                <h1 class="hero-title">Perfect Your<span>Form</span></h1>
+                <p class="hero-description">A cutting-edge mobile application leveraging computer vision and machine learning to analyze your exercise form in real-time, counting reps only when your technique is correct.</p>
+                <div class="hero-cta">
+                    <a href="#showcase" class="btn btn-primary">View Project</a>
+                    <a href="#demos" class="btn btn-secondary">Watch Demos</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-animation-container">
+                    <div class="hero-exercises">
+                        <div class="hero-exercise-icon">
+                            <svg viewBox="0 0 120 70" fill="none">
+                                <g style="animation: pushup 1.5s ease-in-out infinite;">
+                                    <circle cx="22" cy="28" r="10" fill="#ff6b35"/>
+                                    <path d="M32 30 Q50 32 75 42" stroke="#ff6b35" stroke-width="10" stroke-linecap="round" fill="none"/>
+                                    <path d="M75 42 L100 52" stroke="#ff6b35" stroke-width="9" stroke-linecap="round"/>
+                                    <path d="M38 32 L32 52" stroke="#ff6b35" stroke-width="8" stroke-linecap="round"/>
+                                    <path d="M58 38 L54 52" stroke="#ff6b35" stroke-width="8" stroke-linecap="round"/>
+                                </g>
+                            </svg>
+                            <span>Push-ups</span>
+                        </div>
+                        <div class="hero-exercise-icon">
+                            <svg viewBox="0 0 100 80" fill="none">
+                                <g style="animation: pullup 1.5s ease-in-out infinite;">
+                                    <path d="M15 8 L15 5 L85 5 L85 8" stroke="#ff6b35" stroke-width="6" stroke-linecap="round" fill="none"/>
+                                    <path d="M15 5 L15 25" stroke="#ff6b35" stroke-width="5" stroke-linecap="round"/>
+                                    <path d="M85 5 L85 25" stroke="#ff6b35" stroke-width="5" stroke-linecap="round"/>
+                                    <circle cx="50" cy="22" r="9" fill="#ff6b35"/>
+                                    <path d="M50 31 L50 52" stroke="#ff6b35" stroke-width="10" stroke-linecap="round"/>
+                                    <path d="M50 35 L35 12" stroke="#ff6b35" stroke-width="7" stroke-linecap="round"/>
+                                    <path d="M50 35 L65 12" stroke="#ff6b35" stroke-width="7" stroke-linecap="round"/>
+                                    <path d="M50 52 L42 72" stroke="#ff6b35" stroke-width="8" stroke-linecap="round"/>
+                                    <path d="M50 52 L58 72" stroke="#ff6b35" stroke-width="8" stroke-linecap="round"/>
+                                </g>
+                            </svg>
+                            <span>Pull-ups</span>
+                        </div>
+                        <div class="hero-exercise-icon">
+                            <svg viewBox="0 0 120 80" fill="none">
+                                <g style="animation: situp 2s ease-in-out infinite; transform-origin: 90px 62px;">
+                                    <circle cx="35" cy="28" r="10" fill="#ff6b35"/>
+                                    <path d="M18 12 Q25 8 32 12" stroke="#ff6b35" stroke-width="3" stroke-linecap="round" fill="none"/>
+                                    <path d="M14 20 Q22 15 30 20" stroke="#ff6b35" stroke-width="3" stroke-linecap="round" fill="none"/>
+                                    <path d="M35 32 Q28 28 30 20" stroke="#ff6b35" stroke-width="7" stroke-linecap="round" fill="none"/>
+                                    <path d="M40 35 Q55 45 70 55" stroke="#ff6b35" stroke-width="12" stroke-linecap="round" fill="none"/>
+                                    <path d="M70 55 L90 62" stroke="#ff6b35" stroke-width="11" stroke-linecap="round"/>
+                                    <path d="M90 62 L115 62" stroke="#ff6b35" stroke-width="10" stroke-linecap="round"/>
+                                </g>
+                            </svg>
+                            <span>Sit-ups</span>
+                        </div>
+                        <div class="hero-exercise-icon">
+                            <svg viewBox="0 0 80 90" fill="none">
+                                <g style="animation: squat 1.5s ease-in-out infinite; transform-origin: 40px 80px;">
+                                    <circle cx="40" cy="12" r="10" fill="#ff6b35"/>
+                                    <path d="M40 22 L40 42" stroke="#ff6b35" stroke-width="12" stroke-linecap="round"/>
+                                    <path d="M40 28 L18 35" stroke="#ff6b35" stroke-width="8" stroke-linecap="round"/>
+                                    <path d="M40 42 L28 58" stroke="#ff6b35" stroke-width="11" stroke-linecap="round"/>
+                                    <path d="M40 42 L52 58" stroke="#ff6b35" stroke-width="11" stroke-linecap="round"/>
+                                    <path d="M28 58 L25 80" stroke="#ff6b35" stroke-width="10" stroke-linecap="round"/>
+                                    <path d="M52 58 L55 80" stroke="#ff6b35" stroke-width="10" stroke-linecap="round"/>
+                                </g>
+                            </svg>
+                            <span>Squats</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="section-number">01</div>
+        <div class="section-header">
+            <h2 class="section-title">The Vision</h2>
+            <p class="section-subtitle">Building the future of personal fitness training through intelligent form analysis</p>
+        </div>
+        <div class="about-content">
+            <div class="about-left">
+                <div class="about-text fade-in">
+                    <p>True Form was born from a simple observation: most people working out at home have no way to know if they're performing exercises correctly. Poor form leads to injuries, wasted effort, and frustration. Traditional solutions require expensive personal trainers or gym memberships.</p>
+                    <p>This application uses advanced pose estimation technology to track 33 key body landmarks in real-time, analyzing the angles and positions that determine correct exercise form. The counter only increments when the movement meets the criteria—ensuring every rep counts.</p>
+                    <p>Currently supporting four foundational bodyweight exercises: push-ups, pull-ups, sit-ups, and squats. Each exercise has been carefully calibrated to detect the nuances of proper form.</p>
+                </div>
+                <div class="app-icon-container fade-in">
+                    <div class="app-icon-placeholder" id="appIconPlaceholder">
+                        <img src="fitness_app.jpg" alt="True Form App Icon">
+                    </div>
+                    <span class="app-icon-label">App Icon</span>
+                </div>
+            </div>
+            <div class="stats-grid fade-in">
+                <div class="stat-card"><div class="stat-number">4</div><div class="stat-label">Exercises</div></div>
+                <div class="stat-card"><div class="stat-number">33</div><div class="stat-label">Landmarks</div></div>
+                <div class="stat-card"><div class="stat-number">30+</div><div class="stat-label">FPS Analysis</div></div>
+                <div class="stat-card"><div class="stat-number">∞</div><div class="stat-label">Potential</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="showcase-section" id="showcase">
+        <div class="section-number">02</div>
+        <div class="section-header">
+            <h2 class="section-title">App Interface</h2>
+            <p class="section-subtitle">Clean design meets powerful functionality</p>
+        </div>
+        <div class="showcase-grid">
+            <div class="showcase-visual fade-in">
+                <div class="device-frame">
+                    <img src="App_UI.png" alt="True Form App Homepage" class="app-screenshot">
+                </div>
+            </div>
+            <div class="showcase-info fade-in">
+                <h3>Home Screen</h3>
+                <p>The homepage greets users with a personalized welcome and presents four core bodyweight exercises.</p>
+                <p>The warm, inviting color palette creates a motivating atmosphere without overwhelming the user. Typography choices balance readability with personality.</p>
+                <ul class="feature-list">
+                    <li>Personalized user greeting</li>
+                    <li>Clear exercise categorization </li>
+                    <li>Responsive grid layout</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="video-section" id="demos">
+        <div class="section-number">03</div>
+        <div class="section-header">
+            <h2 class="section-title">Form Detection Demos</h2>
+            <p class="section-subtitle">See how the counter responds to correct vs incorrect form</p>
+        </div>
+        <div class="exercise-section-header">
+            <h3 class="exercise-section-title">Push-ups</h3>
+            <p class="exercise-section-subtitle">Chest & Triceps</p>
+        </div>
+        <div class="exercise-demo-grid">
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 140 70" fill="none">
+                        <g style="animation: pushup 1.5s ease-in-out infinite;">
+                            <circle cx="22" cy="28" r="12" fill="#22c55e"/>
+                            <path d="M34 30 Q55 32 80 42" stroke="#22c55e" stroke-width="12" stroke-linecap="round" fill="none"/>
+                            <path d="M80 42 L115 52" stroke="#22c55e" stroke-width="11" stroke-linecap="round"/>
+                            <path d="M42 34 L36 56" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M65 40 L60 56" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Proper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Proper Technique</h4>
+                    <p class="video-desc">Counter increments with each properly executed rep. Full range of motion, correct body alignment.</p>
+                </div>
+            </div>
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 140 70" fill="none">
+                        <g style="animation: pushup 1.5s ease-in-out infinite;">
+                            <circle cx="22" cy="22" r="12" fill="#ef4444"/>
+                            <path d="M34 24 Q50 40 80 38" stroke="#ef4444" stroke-width="12" stroke-linecap="round" fill="none"/>
+                            <path d="M80 38 L115 48" stroke="#ef4444" stroke-width="11" stroke-linecap="round"/>
+                            <path d="M40 32 L34 56" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M68 40 L64 56" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Improper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Improper Technique</h4>
+                    <p class="video-desc">Counter stays at zero. Partial reps, misalignment, or cheating movements are not counted.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="single-exercise-section alt-bg">
+        <div class="exercise-section-header">
+            <h3 class="exercise-section-title">Pull-ups</h3>
+            <p class="exercise-section-subtitle">Back & Biceps</p>
+        </div>
+        <div class="exercise-demo-grid">
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 120 90" fill="none">
+                        <g style="animation: pullup 1.5s ease-in-out infinite;">
+                            <path d="M15 8 L15 5 L105 5 L105 8" stroke="#22c55e" stroke-width="6" stroke-linecap="round" fill="none"/>
+                            <path d="M15 5 L15 28" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M105 5 L105 28" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="60" cy="24" r="11" fill="#22c55e"/>
+                            <path d="M60 35 L60 58" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M60 38 L38 12" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M60 38 L82 12" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M60 58 L48 82" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M60 58 L72 82" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Proper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Proper Technique</h4>
+                    <p class="video-desc">Full extension at bottom, chin over bar at top. Controlled movement throughout.</p>
+                </div>
+            </div>
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 120 90" fill="none">
+                        <g style="animation: pullup 1.5s ease-in-out infinite;">
+                            <path d="M15 8 L15 5 L105 5 L105 8" stroke="#ef4444" stroke-width="6" stroke-linecap="round" fill="none"/>
+                            <path d="M15 5 L15 28" stroke="#ef4444" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M105 5 L105 28" stroke="#ef4444" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="60" cy="32" r="11" fill="#ef4444"/>
+                            <path d="M60 43 L60 62" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M60 45 L40 18" stroke="#ef4444" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M60 45 L80 18" stroke="#ef4444" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M60 62 L48 82" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M60 62 L72 82" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Improper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Improper Technique</h4>
+                    <p class="video-desc">Kipping, partial reps, or insufficient range of motion are not counted.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="single-exercise-section">
+        <div class="exercise-section-header">
+            <h3 class="exercise-section-title">Sit-ups</h3>
+            <p class="exercise-section-subtitle">Core & Abs</p>
+        </div>
+        <div class="exercise-demo-grid">
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 140 75" fill="none">
+                        <g style="animation: situp 2s ease-in-out infinite; transform-origin: 105px 62px;">
+                            <circle cx="38" cy="28" r="12" fill="#22c55e"/>
+                            <path d="M20 10 Q28 5 36 10" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
+                            <path d="M15 20 Q24 14 33 20" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
+                            <path d="M38 32 Q30 28 32 18" stroke="#22c55e" stroke-width="8" stroke-linecap="round" fill="none"/>
+                            <path d="M45 38 Q62 48 82 58" stroke="#22c55e" stroke-width="14" stroke-linecap="round" fill="none"/>
+                            <path d="M82 58 L105 62" stroke="#22c55e" stroke-width="13" stroke-linecap="round"/>
+                            <path d="M105 62 L132 62" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Proper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Proper Technique</h4>
+                    <p class="video-desc">Full sit-up motion, controlled descent, engaging core throughout.</p>
+                </div>
+            </div>
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 140 75" fill="none">
+                        <g style="animation: situp 2s ease-in-out infinite; transform-origin: 105px 62px;">
+                            <circle cx="45" cy="38" r="12" fill="#ef4444"/>
+                            <path d="M45 42 Q38 38 40 28" stroke="#ef4444" stroke-width="8" stroke-linecap="round" fill="none"/>
+                            <path d="M52 46 Q68 52 82 58" stroke="#ef4444" stroke-width="14" stroke-linecap="round" fill="none"/>
+                            <path d="M82 58 L105 62" stroke="#ef4444" stroke-width="13" stroke-linecap="round"/>
+                            <path d="M105 62 L132 62" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Improper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Improper Technique</h4>
+                    <p class="video-desc">Using momentum, incomplete range of motion, or pulling on neck.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="single-exercise-section alt-bg">
+        <div class="exercise-section-header">
+            <h3 class="exercise-section-title">Squats</h3>
+            <p class="exercise-section-subtitle">Quads & Glutes</p>
+        </div>
+        <div class="exercise-demo-grid">
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 100 100" fill="none">
+                        <g style="animation: squat 1.5s ease-in-out infinite; transform-origin: 50px 90px;">
+                            <!-- Squat figure - front view -->
+                            <circle cx="50" cy="15" r="12" fill="#22c55e"/>
+                            <path d="M50 27 L50 50" stroke="#22c55e" stroke-width="14" stroke-linecap="round"/>
+                            <path d="M50 35 L25 42" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M50 35 L75 42" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M50 50 L35 70" stroke="#22c55e" stroke-width="13" stroke-linecap="round"/>
+                            <path d="M50 50 L65 70" stroke="#22c55e" stroke-width="13" stroke-linecap="round"/>
+                            <path d="M35 70 L30 92" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M65 70 L70 92" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Proper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Proper Technique</h4>
+                    <p class="video-desc">Depth at or below parallel, knees tracking over toes, back straight.</p>
+                </div>
+            </div>
+            <div class="exercise-demo-card fade-in">
+                <div class="video-wrapper">
+                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
+                    <div class="video-placeholder">
+                        <div class="video-upload-icon">▶</div>
+                        <span class="video-upload-text">Click to upload video</span>
+                        <input type="file" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="exercise-animation">
+                    <svg viewBox="0 0 100 100" fill="none">
+                        <g style="animation: squat 1.5s ease-in-out infinite; transform-origin: 50px 90px;">
+                            <!-- Squat figure - front view incorrect (knees caving in) -->
+                            <circle cx="50" cy="18" r="12" fill="#ef4444"/>
+                            <path d="M50 30 L50 50" stroke="#ef4444" stroke-width="14" stroke-linecap="round"/>
+                            <path d="M50 38 L28 45" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M50 38 L72 45" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M50 50 L42 68" stroke="#ef4444" stroke-width="13" stroke-linecap="round"/>
+                            <path d="M50 50 L58 68" stroke="#ef4444" stroke-width="13" stroke-linecap="round"/>
+                            <path d="M42 68 L35 92" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M58 68 L65 92" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                    <span class="exercise-animation-label">Improper Form</span>
+                </div>
+                <div class="video-info">
+                    <h4 class="video-title">Improper Technique</h4>
+                    <p class="video-desc">Shallow squats, knees caving in, or excessive forward lean.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline-section" id="journey">
+        <div class="section-number">04</div>
+        <div class="section-header">
+            <h2 class="section-title">Development Journey</h2>
+            <p class="section-subtitle">From concept to functional prototype—the steps that shaped this project</p>
+        </div>
+        <div class="timeline-container">
+            <div class="timeline">
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 01</div><h3 class="timeline-title">Ideation & Research</h3><p class="timeline-text">Explored the problem space of home fitness, researched pose estimation technologies, and identified MediaPipe as the optimal solution for real-time skeletal tracking.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 02</div><h3 class="timeline-title">UI/UX Design</h3><p class="timeline-text">Sketched initial wireframes and designed the app flow. Created a clean, intuitive interface that puts exercise selection and form feedback front and center.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 03</div><h3 class="timeline-title">Core Architecture</h3><p class="timeline-text">Set up the React Native development environment with Expo Go. Established TypeScript for type safety and integrated MediaPipe's pose detection pipeline.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 04</div><h3 class="timeline-title">Pose Detection Integration</h3><p class="timeline-text">Implemented real-time camera feed processing, extracted 33 skeletal landmarks, and built the visualization layer to render pose overlays on screen.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 05</div><h3 class="timeline-title">Form Analysis Algorithm</h3><p class="timeline-text">Developed custom algorithms to calculate joint angles and detect exercise phases. Defined thresholds for correct form across all four exercises.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 06</div><h3 class="timeline-title">Rep Counter Logic</h3><p class="timeline-text">Built state machine for tracking exercise phases (up/down positions). Counter only increments when full range of motion with correct form is detected.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Step 07</div><h3 class="timeline-title">Testing & Refinement</h3><p class="timeline-text">Extensive testing with various body types, lighting conditions, and camera angles. Fine-tuned detection thresholds for accuracy and reliability.</p></div><div class="timeline-marker"></div></div>
+                <div class="timeline-item"><div class="timeline-content"><div class="timeline-step">Ongoing</div><h3 class="timeline-title">Future Development</h3><p class="timeline-text">Planning to add more exercises, real-time audio feedback, workout tracking history, and social features for friendly competition.</p></div><div class="timeline-marker"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-section" id="tech">
+        <div class="section-number">05</div>
+        <div class="section-header">
+            <h2 class="section-title">Tech Stack</h2>
+            <p class="section-subtitle">The powerful technologies driving real-time form analysis</p>
+        </div>
+        <div class="tech-grid">
+            <div class="tech-card fade-in"><div class="tech-icon"><svg viewBox="-11.5 -10.232 23 20.463" width="50" height="50"><circle r="2.05" fill="#61dafb"/><g stroke="#61dafb" fill="none" stroke-width="1"><ellipse rx="11" ry="4.2"/><ellipse rx="11" ry="4.2" transform="rotate(60)"/><ellipse rx="11" ry="4.2" transform="rotate(120)"/></g></svg></div><h3 class="tech-name">React Native</h3><p class="tech-desc">Cross-platform mobile development</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">📘</div><h3 class="tech-name">TypeScript</h3><p class="tech-desc">Type-safe code architecture</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">📱</div><h3 class="tech-name">Expo Go</h3><p class="tech-desc">Rapid development & testing</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">🎯</div><h3 class="tech-name">MediaPipe</h3><p class="tech-desc">ML-powered pose estimation</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon"><svg viewBox="0 0 50 50" width="50" height="50"><rect width="50" height="50" rx="8" fill="#20232a"/><g transform="translate(25,25)"><circle r="3" fill="#61dafb"/><g stroke="#61dafb" fill="none" stroke-width="1.5"><ellipse rx="15" ry="5.8"/><ellipse rx="15" ry="5.8" transform="rotate(60)"/><ellipse rx="15" ry="5.8" transform="rotate(120)"/></g></g></svg></div><h3 class="tech-name">React.js</h3><p class="tech-desc">Component-based UI library</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">📷</div><h3 class="tech-name">Camera API</h3><p class="tech-desc">Real-time video capture</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">🧮</div><h3 class="tech-name">Vector Math</h3><p class="tech-desc">Angle & position calculations</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">🎨</div><h3 class="tech-name">Canvas API</h3><p class="tech-desc">Skeleton visualization</p></div>
+            <div class="tech-card fade-in"><div class="tech-icon">🚀</div><h3 class="tech-name">Coming Soon</h3><p class="tech-desc">Firebase, TensorFlow.js</p></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">TRUE FORM</div>
+        <p class="footer-text">Built with passion for fitness and technology • Project in active development</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.fade-in, .timeline-item').forEach(el => observer.observe(el));
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.style.background = window.scrollY > 100 ? 'rgba(10, 10, 10, 0.95)' : 'rgba(10, 10, 10, 0.8)';
+        });
+
+        document.querySelectorAll('.video-placeholder').forEach(container => {
+            const input = container.querySelector('input[type="file"]');
+            container.addEventListener('click', (e) => { if (e.target.tagName !== 'VIDEO') input.click(); });
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const videoUrl = URL.createObjectURL(file);
+                    container.innerHTML = `<video autoplay loop muted playsinline><source src="${videoUrl}" type="${file.type}"></video>`;
+                }
+            });
+        });
+
+        const appIconPlaceholder = document.getElementById('appIconPlaceholder');
+        const appIconInput = document.getElementById('appIconInput');
+        appIconPlaceholder.addEventListener('click', () => appIconInput.click());
+        appIconInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const imageUrl = URL.createObjectURL(fitness_app.jpg);
+                appIconPlaceholder.innerHTML = `<img src="" alt="App Icon">`;
+            }
+        });
+
+
+        function animateCounter(el, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) { el.textContent = target; clearInterval(timer); }
+                else el.textContent = Math.floor(current);
+            }, 30);
+        }
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.stat-number').forEach(stat => {
+                        const value = parseInt(stat.textContent);
+                        if (!isNaN(value) && value > 0) animateCounter(stat, value);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        const statsGrid = document.querySelector('.stats-grid');
+        if (statsGrid) statsObserver.observe(statsGrid);
+    </script>
+</body>
+</html>
