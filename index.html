@@ -314,11 +314,11 @@
         .video-section { padding: 8rem 4rem; position: relative; }
         .video-section.alt-bg { background: var(--bg-secondary); }
         .exercise-demo-grid {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
         }
         .exercise-demo-card {
             background: var(--card-bg);
@@ -340,10 +340,9 @@
             font-weight: 700;
             z-index: 2;
         }
-        .label-correct { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .label-incorrect { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .label-correct { background: rgba(255, 107, 53, 0.2); color: var(--accent-orange); border: 1px solid rgba(255, 107, 53, 0.3); font-weight: 700; }
         .video-placeholder {
-            aspect-ratio: 16/9;
+            aspect-ratio: 9/16;
             background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
             display: flex;
             flex-direction: column;
@@ -352,7 +351,7 @@
             gap: 1rem;
             cursor: pointer;
         }
-        .video-placeholder video { width: 100%; height: 100%; object-fit: cover; }
+        .video-placeholder video { width: 100%; height: 100%; object-fit: cover; background: #1a1a1a; display: block; }
         .video-upload-icon {
             width: 60px; height: 60px;
             border: 2px dashed var(--card-border);
@@ -494,7 +493,8 @@
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 1024px) {
-            .hero-content, .about-content, .showcase-grid, .exercise-demo-grid { grid-template-columns: 1fr; }
+            .hero-content, .about-content, .showcase-grid { grid-template-columns: 1fr; }
+            .exercise-demo-grid { grid-template-columns: repeat(2, 1fr); }
             .timeline::before { left: 20px; }
             .timeline-item { flex-direction: row !important; justify-content: flex-start; padding-left: 60px; }
             .timeline-content { width: 100%; }
@@ -506,6 +506,7 @@
             .hero, .about, .tech-section, .showcase-section, .video-section, .timeline-section, .single-exercise-section { padding: 4rem 2rem; }
             .section-number { font-size: 5rem; }
             .stats-grid { grid-template-columns: 1fr; }
+            .exercise-demo-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
         }
     </style>
 </head>
@@ -655,20 +656,17 @@
         <div class="section-number">03</div>
         <div class="section-header">
             <h2 class="section-title">Form Detection Demos</h2>
-            <p class="section-subtitle">See how the counter responds to correct vs incorrect form</p>
-        </div>
-        <div class="exercise-section-header">
-            <h3 class="exercise-section-title">Push-ups</h3>
-            <p class="exercise-section-subtitle">Chest & Triceps</p>
+            <p class="section-subtitle">See how the app detects and counts proper exercise form</p>
         </div>
         <div class="exercise-demo-grid">
             <div class="exercise-demo-card fade-in">
                 <div class="video-wrapper">
-                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <span class="video-label label-correct">Push-ups</span>
                     <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
+                        <video autoplay loop muted playsinline preload="auto">
+                        <source src="pushups.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
                 <div class="exercise-animation">
@@ -681,55 +679,22 @@
                             <path d="M65 40 L60 56" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
                         </g>
                     </svg>
-                    <span class="exercise-animation-label">Proper Form</span>
+                    <span class="exercise-animation-label">Chest & Triceps</span>
                 </div>
                 <div class="video-info">
                     <h4 class="video-title">Proper Technique</h4>
                     <p class="video-desc">Counter increments with each properly executed rep. Full range of motion, correct body alignment.</p>
                 </div>
             </div>
-            <div class="exercise-demo-card fade-in">
-                <div class="video-wrapper">
-                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
-                    <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
-                    </div>
-                </div>
-                <div class="exercise-animation">
-                    <svg viewBox="0 0 140 70" fill="none">
-                        <g style="animation: pushup 1.5s ease-in-out infinite;">
-                            <circle cx="22" cy="22" r="12" fill="#ef4444"/>
-                            <path d="M34 24 Q50 40 80 38" stroke="#ef4444" stroke-width="12" stroke-linecap="round" fill="none"/>
-                            <path d="M80 38 L115 48" stroke="#ef4444" stroke-width="11" stroke-linecap="round"/>
-                            <path d="M40 32 L34 56" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-                            <path d="M68 40 L64 56" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-                        </g>
-                    </svg>
-                    <span class="exercise-animation-label">Improper Form</span>
-                </div>
-                <div class="video-info">
-                    <h4 class="video-title">Improper Technique</h4>
-                    <p class="video-desc">Counter stays at zero. Partial reps, misalignment, or cheating movements are not counted.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="single-exercise-section alt-bg">
-        <div class="exercise-section-header">
-            <h3 class="exercise-section-title">Pull-ups</h3>
-            <p class="exercise-section-subtitle">Back & Biceps</p>
-        </div>
-        <div class="exercise-demo-grid">
             <div class="exercise-demo-card fade-in">
                 <div class="video-wrapper">
-                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <span class="video-label label-correct">Pull-ups</span>
                     <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
+                        <video autoplay loop muted playsinline preload="auto">
+                        <source src="pullups.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
                 <div class="exercise-animation">
@@ -746,59 +711,22 @@
                             <path d="M60 58 L72 82" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
                         </g>
                     </svg>
-                    <span class="exercise-animation-label">Proper Form</span>
+                    <span class="exercise-animation-label">Back & Biceps</span>
                 </div>
                 <div class="video-info">
                     <h4 class="video-title">Proper Technique</h4>
                     <p class="video-desc">Full extension at bottom, chin over bar at top. Controlled movement throughout.</p>
                 </div>
             </div>
-            <div class="exercise-demo-card fade-in">
-                <div class="video-wrapper">
-                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
-                    <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
-                    </div>
-                </div>
-                <div class="exercise-animation">
-                    <svg viewBox="0 0 120 90" fill="none">
-                        <g style="animation: pullup 1.5s ease-in-out infinite;">
-                            <path d="M15 8 L15 5 L105 5 L105 8" stroke="#ef4444" stroke-width="6" stroke-linecap="round" fill="none"/>
-                            <path d="M15 5 L15 28" stroke="#ef4444" stroke-width="6" stroke-linecap="round"/>
-                            <path d="M105 5 L105 28" stroke="#ef4444" stroke-width="6" stroke-linecap="round"/>
-                            <circle cx="60" cy="32" r="11" fill="#ef4444"/>
-                            <path d="M60 43 L60 62" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
-                            <path d="M60 45 L40 18" stroke="#ef4444" stroke-width="9" stroke-linecap="round"/>
-                            <path d="M60 45 L80 18" stroke="#ef4444" stroke-width="9" stroke-linecap="round"/>
-                            <path d="M60 62 L48 82" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-                            <path d="M60 62 L72 82" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-                        </g>
-                    </svg>
-                    <span class="exercise-animation-label">Improper Form</span>
-                </div>
-                <div class="video-info">
-                    <h4 class="video-title">Improper Technique</h4>
-                    <p class="video-desc">Kipping, partial reps, or insufficient range of motion are not counted.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="single-exercise-section">
-        <div class="exercise-section-header">
-            <h3 class="exercise-section-title">Sit-ups</h3>
-            <p class="exercise-section-subtitle">Core & Abs</p>
-        </div>
-        <div class="exercise-demo-grid">
             <div class="exercise-demo-card fade-in">
                 <div class="video-wrapper">
-                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <span class="video-label label-correct">Sit-ups</span>
                     <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
+                        <video autoplay loop muted playsinline preload="auto">
+                        <source src="situps.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
                 <div class="exercise-animation">
@@ -813,61 +741,27 @@
                             <path d="M105 62 L132 62" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
                         </g>
                     </svg>
-                    <span class="exercise-animation-label">Proper Form</span>
+                    <span class="exercise-animation-label">Core & Abs</span>
                 </div>
                 <div class="video-info">
                     <h4 class="video-title">Proper Technique</h4>
                     <p class="video-desc">Full sit-up motion, controlled descent, engaging core throughout.</p>
                 </div>
             </div>
-            <div class="exercise-demo-card fade-in">
-                <div class="video-wrapper">
-                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
-                    <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
-                    </div>
-                </div>
-                <div class="exercise-animation">
-                    <svg viewBox="0 0 140 75" fill="none">
-                        <g style="animation: situp 2s ease-in-out infinite; transform-origin: 105px 62px;">
-                            <circle cx="45" cy="38" r="12" fill="#ef4444"/>
-                            <path d="M45 42 Q38 38 40 28" stroke="#ef4444" stroke-width="8" stroke-linecap="round" fill="none"/>
-                            <path d="M52 46 Q68 52 82 58" stroke="#ef4444" stroke-width="14" stroke-linecap="round" fill="none"/>
-                            <path d="M82 58 L105 62" stroke="#ef4444" stroke-width="13" stroke-linecap="round"/>
-                            <path d="M105 62 L132 62" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
-                        </g>
-                    </svg>
-                    <span class="exercise-animation-label">Improper Form</span>
-                </div>
-                <div class="video-info">
-                    <h4 class="video-title">Improper Technique</h4>
-                    <p class="video-desc">Using momentum, incomplete range of motion, or pulling on neck.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="single-exercise-section alt-bg">
-        <div class="exercise-section-header">
-            <h3 class="exercise-section-title">Squats</h3>
-            <p class="exercise-section-subtitle">Quads & Glutes</p>
-        </div>
-        <div class="exercise-demo-grid">
             <div class="exercise-demo-card fade-in">
                 <div class="video-wrapper">
-                    <span class="video-label label-correct">✓ Correct Form</span>
+                    <span class="video-label label-correct">Squats</span>
                     <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
+                        <video autoplay loop muted playsinline preload="auto">
+                        <source src="squats.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
                 <div class="exercise-animation">
                     <svg viewBox="0 0 100 100" fill="none">
                         <g style="animation: squat 1.5s ease-in-out infinite; transform-origin: 50px 90px;">
-                            <!-- Squat figure - front view -->
                             <circle cx="50" cy="15" r="12" fill="#22c55e"/>
                             <path d="M50 27 L50 50" stroke="#22c55e" stroke-width="14" stroke-linecap="round"/>
                             <path d="M50 35 L25 42" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
@@ -878,41 +772,11 @@
                             <path d="M65 70 L70 92" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
                         </g>
                     </svg>
-                    <span class="exercise-animation-label">Proper Form</span>
+                    <span class="exercise-animation-label">Quads & Glutes</span>
                 </div>
                 <div class="video-info">
                     <h4 class="video-title">Proper Technique</h4>
                     <p class="video-desc">Depth at or below parallel, knees tracking over toes, back straight.</p>
-                </div>
-            </div>
-            <div class="exercise-demo-card fade-in">
-                <div class="video-wrapper">
-                    <span class="video-label label-incorrect">✗ Incorrect Form</span>
-                    <div class="video-placeholder">
-                        <div class="video-upload-icon">▶</div>
-                        <span class="video-upload-text">Click to upload video</span>
-                        <input type="file" accept="video/*" style="display: none;">
-                    </div>
-                </div>
-                <div class="exercise-animation">
-                    <svg viewBox="0 0 100 100" fill="none">
-                        <g style="animation: squat 1.5s ease-in-out infinite; transform-origin: 50px 90px;">
-                            <!-- Squat figure - front view incorrect (knees caving in) -->
-                            <circle cx="50" cy="18" r="12" fill="#ef4444"/>
-                            <path d="M50 30 L50 50" stroke="#ef4444" stroke-width="14" stroke-linecap="round"/>
-                            <path d="M50 38 L28 45" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-                            <path d="M50 38 L72 45" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-                            <path d="M50 50 L42 68" stroke="#ef4444" stroke-width="13" stroke-linecap="round"/>
-                            <path d="M50 50 L58 68" stroke="#ef4444" stroke-width="13" stroke-linecap="round"/>
-                            <path d="M42 68 L35 92" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
-                            <path d="M58 68 L65 92" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
-                        </g>
-                    </svg>
-                    <span class="exercise-animation-label">Improper Form</span>
-                </div>
-                <div class="video-info">
-                    <h4 class="video-title">Improper Technique</h4>
-                    <p class="video-desc">Shallow squats, knees caving in, or excessive forward lean.</p>
                 </div>
             </div>
         </div>
@@ -995,14 +859,16 @@
 
         const appIconPlaceholder = document.getElementById('appIconPlaceholder');
         const appIconInput = document.getElementById('appIconInput');
-        appIconPlaceholder.addEventListener('click', () => appIconInput.click());
-        appIconInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const imageUrl = URL.createObjectURL(fitness_app.jpg);
-                appIconPlaceholder.innerHTML = `<img src="" alt="App Icon">`;
-            }
-        });
+        if (appIconPlaceholder && appIconInput) {
+            appIconPlaceholder.addEventListener('click', () => appIconInput.click());
+            appIconInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const imageUrl = URL.createObjectURL(file);
+                    appIconPlaceholder.innerHTML = `<img src="${imageUrl}" alt="App Icon">`;
+                }
+            });
+        }
 
 
         function animateCounter(el, target) {
